@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Features · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Features</p>
+    <h1>A public chain, a private wallet</h1>
+    <p class="lead">Solana shows every balance and every transfer to anyone who looks. Nexora is built to take that exposure away.</p>
+  </header>
+
+  <dl class="defs">
+    <div><dt>Shielded balances</dt><dd><p>Hold tokens in a private balance. Observers see deposits and withdrawals, not what you keep.</p></dd></div>
+    <div><dt>One-time addresses</dt><dd><p>Receive on a fresh address each time, so payments to you cannot be grouped under one name.</p></dd></div>
+    <div><dt>Private send</dt><dd><p>Payments split across routes and rejoin at the destination, with no direct line from sender to recipient.</p></dd></div>
+    <div><dt>Private swap</dt><dd><p>Trade from your private balance so the swap is not tied to your wallet.</p></dd></div>
+    <div><dt>Selective disclosure</dt><dd><p>Share a read-only view of your history with an accountant or auditor, and nothing more.</p></dd></div>
+    <div><dt>Non-custodial</dt><dd><p>Your wallet holds the keys. Nexora cannot move your funds and never asks for a seed phrase.</p></dd></div>
+  </dl>
+</main>
+
+<script src="nexora.js"></script>
+<script>NX.init({ page: 'features', anim: 'wave' });</script>
+</body>
+</html>

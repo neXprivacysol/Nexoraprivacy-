@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Security · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Security</p>
+    <h1>Your keys never reach Nexora</h1>
+    <p class="lead">Every approval happens inside your wallet. Nexora only reads a public address and prepares transactions for you to review.</p>
+  </header>
+
+  <div class="split">
+    <section class="panel">
+      <h2 class="sub">How Nexora is built</h2>
+      <dl class="defs" style="border-top:0">
+        <div><dt style="font-size:18px">No seed phrase</dt><dd>Nexora never asks for a seed phrase or private key, on any page, for any reason.</dd></div>
+        <div><dt style="font-size:18px">Wallet signs</dt><dd>Each transaction opens in your wallet. You see the details and approve or reject.</dd></div>
+        <div><dt style="font-size:18px">Watch-only mode</dt><dd>A pasted address can look around but cannot sign anything.</dd></div>
+        <div><dt style="font-size:18px">Local settings</dt><dd>Privacy preferences stay in your browser.</dd></div>
+      </dl>
+    </section>
+
+    <aside class="panel">
+      <h2 class="sub">Stay safe</h2>
+      <ol class="steps">
+        <li>Check the address bar before you connect. Bookmark the real site.</li>
+        <li>Reject any request for a seed phrase. Real support never asks for one.</li>
+        <li>Read every transaction in your wallet before you approve it.</li>
+        <li>Revoke old connections from inside your wallet's settings.</li>
+        <li>Use a hardware wallet for larger balances.</li>
+      </ol>
+      <div class="notice">This is a preview build and has not been independently audited. Treat it accordingly and start with small amounts.</div>
+    </aside>
+  </div>
+</main>
+
+<script src="nexora.js"></script>
+<script>NX.init({ page: 'security', anim: 'scanner' });</script>
+</body>
+</html>

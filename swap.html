@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Swap · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Swap</p>
+    <h1>Trade tokens without a public trail</h1>
+    <p class="lead">Swap from your private balance into another token. The trade settles, and your wallet is not tied to either side of it.</p>
+  </header>
+
+  <div class="split">
+    <form class="panel" id="f" novalidate>
+      <div class="row">
+        <div class="field"><label for="from">You pay</label>
+          <select id="from"><option>SOL</option><option>USDC</option><option>USDT</option></select></div>
+        <div class="field"><label for="amt">Amount</label>
+          <input id="amt" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"></div>
+      </div>
+      <button type="button" class="btn sm" id="flip" style="justify-self:start">Reverse pair</button>
+      <div class="row">
+        <div class="field"><label for="to">You receive</label>
+          <select id="to"><option>USDC</option><option>SOL</option><option>USDT</option></select></div>
+        <div class="field"><label for="quote">Estimate</label>
+          <output class="box" id="quote">Quote appears once a swap route is connected</output></div>
+      </div>
+      <div class="field">
+        <span class="label" id="slipL">Slippage tolerance</span>
+        <div class="seg" role="group" aria-labelledby="slipL" id="slip">
+          <button type="button" aria-pressed="false">0.5%</button>
+          <button type="button" aria-pressed="true">1%</button>
+          <button type="button" aria-pressed="false">2%</button>
+        </div>
+      </div>
+      <div class="notice">Preview mode. The form checks your input and walks through the swap flow. Nothing is signed or sent.</div>
+      <button class="btn solid" type="submit">Swap privately</button>
+      <p class="msg" role="status"></p>
+      <ol class="log" aria-live="polite"></ol>
+    </form>
+
+    <aside class="panel">
+      <h2 class="sub">How a private swap works</h2>
+      <ol class="steps">
+        <li>Your private balance funds the trade, so your wallet is not the counterparty.</li>
+        <li>The swap runs against on-chain liquidity.</li>
+        <li>The result returns to your private balance in the new token.</li>
+      </ol>
+    </aside>
+  </div>
+</main>
+
+<script src="nexora.js"></script>
+<script>
+  NX.init({ page: 'swap', anim: 'binary' });
+  var from = document.getElementById('from'), to = document.getElementById('to');
+  document.getElementById('flip').addEventListener('click', function () { var a = from.value; from.value = to.value; to.value = a; });
+  var seg = document.getElementById('slip');
+  seg.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    Array.prototype.forEach.call(seg.children, function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  });
+  NX.actionForm(document.getElementById('f'), {
+    validate: function () {
+      if (from.value === to.value) return 'Pick two different tokens.';
+      var v = parseFloat(document.getElementById('amt').value);
+      return (isFinite(v) && v > 0) ? '' : 'Enter an amount greater than zero.';
+    },
+    steps: ['Checking the pair', 'Looking for a swap route', 'Generating the proof', 'Preparing the transaction for your wallet']
+  });
+</script>
+</body>
+</html>

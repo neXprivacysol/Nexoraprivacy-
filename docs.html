@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Docs · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Docs</p>
+    <h1>Start in four steps</h1>
+    <p class="lead">From first connection to a private balance. Concepts and the wallet detection code follow.</p>
+  </header>
+
+  <section class="panel">
+    <h2 class="sub">Quick start</h2>
+    <ol class="steps">
+      <li>Open the Connect wallet page and approve the request in your wallet.</li>
+      <li>Open Shield and move a small amount into your private balance.</li>
+      <li>Check the Vault to confirm the balance and set your privacy controls.</li>
+      <li>Use Send or Swap from the private balance.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="sec">Concepts</h2>
+    <dl class="defs">
+      <div><dt>Shielded balance</dt><dd>Tokens held privately. Only your keys can show or spend them.</dd></div>
+      <div><dt>Note</dt><dd>The private record created when you shield. Spending a note moves value without naming you.</dd></div>
+      <div><dt>Route</dt><dd>One path a private payment takes. More routes hide more and settle slower.</dd></div>
+      <div><dt>Watch-only</dt><dd>A session with an address but no signing rights.</dd></div>
+    </dl>
+  </section>
+
+  <section class="panel">
+    <h2 class="sub">Wallet detection</h2>
+    <p class="muted" style="margin:0">Nexora lists wallets through Wallet Standard, so any compliant wallet appears without extra code.</p>
+    <pre><code>const wallets = [];
+const api = { register(...w) { wallets.push(...w); return () =&gt; {}; } };
+
+window.addEventListener('wallet-standard:register-wallet',
+  (e) =&gt; e.detail(api));
+window.dispatchEvent(
+  new CustomEvent('wallet-standard:app-ready', { detail: api }));
+
+const solana = wallets.filter(w =&gt;
+  w.chains.some(c =&gt; c.startsWith('solana:')));
+
+const { accounts } =
+  await solana[0].features['standard:connect'].connect();
+console.log(accounts[0].address);</code></pre>
+  </section>
+</main>
+
+<script src="nexora.js"></script>
+<script>NX.init({ page: 'docs', anim: 'rain' });</script>
+</body>
+</html>

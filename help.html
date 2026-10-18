@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Help · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Help</p>
+    <h1>Answers to the usual questions</h1>
+    <p class="lead">Connecting a wallet is where most problems start. Begin there.</p>
+  </header>
+
+  <details open>
+    <summary>How do I connect Phantom?</summary>
+    <div class="ans">Install Phantom, create or import a wallet and unlock it. Open the Connect wallet page, press Connect next to Phantom and approve the request in the Phantom window.</div>
+  </details>
+  <details>
+    <summary>How do I connect MetaMask?</summary>
+    <div class="ans">MetaMask has to expose a Solana account. Update MetaMask, enable Solana in its settings, then press Connect next to MetaMask. If it shows as found without a Solana account, the version you have does not support Solana yet.</div>
+  </details>
+  <details>
+    <summary>My wallet is installed but shows Not found</summary>
+    <div class="ans">Reload the page after unlocking the wallet. If you are viewing Nexora inside a preview frame, open it in its own browser tab, since extensions often cannot reach framed pages.</div>
+  </details>
+  <details>
+    <summary>Which wallets work?</summary>
+    <div class="ans">Phantom, MetaMask, Solflare, Backpack, Coinbase Wallet, Trust Wallet and Exodus, plus any wallet that follows Wallet Standard. Ledger works through Phantom or Solflare.</div>
+  </details>
+  <details>
+    <summary>Does Nexora hold my funds?</summary>
+    <div class="ans">No. Your wallet holds the keys and approves every transaction. Nexora never sees a seed phrase or private key.</div>
+  </details>
+  <details>
+    <summary>Why are my balances blank?</summary>
+    <div class="ans">This preview does not read the network, so the Vault shows dashes. Balances appear once Nexora is connected to a privacy program.</div>
+  </details>
+  <details>
+    <summary>What is watch-only mode?</summary>
+    <div class="ans">Paste a public Solana address on the Connect page to browse without a wallet. A watch-only session cannot sign, so it is safe to use on any device.</div>
+  </details>
+  <details>
+    <summary>Did my transaction go through?</summary>
+    <div class="ans">Not in the preview. Shield, Send and Swap walk through each step but never sign or broadcast, so no funds move.</div>
+  </details>
+</main>
+
+<script src="nexora.js"></script>
+<script>NX.init({ page: 'help', anim: 'sonar' });</script>
+</body>
+</html>

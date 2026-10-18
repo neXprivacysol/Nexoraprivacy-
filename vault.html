@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vault · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main" id="root">
+  <header class="page-head">
+    <p class="eyebrow">Vault</p>
+    <h1>Your balances, in private</h1>
+    <p class="lead">See what is shielded, what is public, and decide how much Nexora shows on screen.</p>
+  </header>
+
+  <div class="split">
+    <div style="display:grid;gap:20px;min-width:0">
+      <section class="panel">
+        <h2 class="sub">Account</h2>
+        <div class="field"><span class="label">Wallet</span><span id="wn" class="mono">Not connected</span></div>
+        <div class="field"><span class="label">Address</span><span id="wa" class="addr">Connect a wallet to see its address.</span></div>
+        <div><button type="button" class="btn sm" id="copy" hidden>Copy address</button></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="sub">Balances</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Token</th><th>Shielded</th><th>Public</th></tr></thead>
+            <tbody>
+              <tr><td>SOL</td><td class="bal">&mdash;</td><td class="bal">&mdash;</td></tr>
+              <tr><td>USDC</td><td class="bal">&mdash;</td><td class="bal">&mdash;</td></tr>
+              <tr><td>USDT</td><td class="bal">&mdash;</td><td class="bal">&mdash;</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Balances fill in once Nexora reads your accounts. The preview does not query the network.</p>
+      </section>
+
+      <section class="panel">
+        <h2 class="sub">Activity</h2>
+        <p class="muted" style="margin:0">No private activity yet. Shield funds to start.</p>
+      </section>
+    </div>
+
+    <aside class="panel">
+      <h2 class="sub">Privacy controls</h2>
+      <div class="toggles">
+        <label><input type="checkbox" id="hide"> Hide balances on screen</label>
+        <label><input type="checkbox" id="confirm" checked> Ask before every send</label>
+        <label><input type="checkbox" id="auto"> Shield incoming deposits automatically</label>
+      </div>
+      <p class="muted" style="margin:0;font-size:14px">These settings are saved in this browser only.</p>
+    </aside>
+  </div>
+</main>
+
+<script src="nexora.js"></script>
+<script>
+  NX.init({ page: 'vault', anim: 'radar' });
+  var copyBtn = document.getElementById('copy');
+  NX.onSession(function (s) {
+    document.getElementById('wn').textContent = s ? s.wallet : 'Not connected';
+    document.getElementById('wa').textContent = s ? s.address : 'Connect a wallet to see its address.';
+    copyBtn.hidden = !s;
+  });
+  copyBtn.addEventListener('click', function () { var s = NX.session(); if (s) NX.copy(s.address); });
+  ['hide', 'confirm', 'auto'].forEach(function (id) {
+    var el = document.getElementById(id), k = 'nexora.pref.' + id;
+    try { var v = localStorage.getItem(k); if (v !== null) el.checked = v === '1'; } catch (e) {}
+    function apply() { if (id === 'hide') document.getElementById('root').classList.toggle('hidden-bal', el.checked); }
+    apply();
+    el.addEventListener('change', function () { try { localStorage.setItem(k, el.checked ? '1' : '0'); } catch (e) {} apply(); });
+  });
+</script>
+</body>
+</html>

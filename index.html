@@ -1,0 +1,52 @@
+<title>Nexora</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<main class="wrap main">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Privacy wallet for Solana</p>
+      <h1 class="mega">Nexora</h1>
+      <p class="lead">Hold, send and swap on Solana without publishing your balances and history to everyone who looks.</p>
+      <div class="cta">
+        <a class="btn solid" href="connect.html">Connect wallet</a>
+        <a class="btn" href="features.html">How it works</a>
+      </div>
+      <dl class="facts">
+        <div><dt>Custody</dt><dd>Non-custodial</dd></div>
+        <div><dt>Chain</dt><dd>Solana</dd></div>
+        <div><dt>Seed phrase</dt><dd>Never requested</dd></div>
+      </dl>
+    </div>
+    <div class="hero-art"><canvas id="hero" role="img" aria-label="A rotating sphere of linked nodes inside a blueprint frame, with live readouts"></canvas></div>
+  </section>
+
+  <section>
+    <h2 class="sec">Move funds</h2>
+    <div class="tiles">
+      <a class="tile" href="shield.html"><h3>Shield</h3><p>Move public tokens into your private balance.</p><span class="go">cd ./shield &rarr;</span></a>
+      <a class="tile" href="send.html"><h3>Send</h3><p>Pay any Solana address through a private route.</p><span class="go">cd ./send &rarr;</span></a>
+      <a class="tile" href="swap.html"><h3>Swap</h3><p>Trade one token for another without a visible link.</p><span class="go">cd ./swap &rarr;</span></a>
+      <a class="tile" href="vault.html"><h3>Vault</h3><p>See your balances and set privacy controls.</p><span class="go">cd ./vault &rarr;</span></a>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Learn and get help</h2>
+    <div class="tiles">
+      <a class="tile" href="wallets.html"><h3>Wallets</h3><p>Phantom, MetaMask, Solflare and more.</p><span class="go">cd ./wallets &rarr;</span></a>
+      <a class="tile" href="security.html"><h3>Security</h3><p>How keys stay yours and what to watch for.</p><span class="go">cd ./security &rarr;</span></a>
+      <a class="tile" href="docs.html"><h3>Docs</h3><p>Quick start, concepts and wallet detection code.</p><span class="go">cd ./docs &rarr;</span></a>
+      <a class="tile" href="help.html"><h3>Help</h3><p>Answers for connecting and common problems.</p><span class="go">cd ./help &rarr;</span></a>
+    </div>
+  </section>
+</main>
+
+<script src="nexora.js"></script>
+<script>
+  NX.init({ page: 'home' });
+  NX.run(document.getElementById('hero'), 'hud');
+</script>

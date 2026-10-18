@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connect wallet · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Connect wallet</p>
+    <h1>Choose the wallet that holds your keys</h1>
+    <p class="lead">Nexora asks your wallet for a public address. Keys, signing and approvals stay inside the wallet.</p>
+  </header>
+
+  <div class="split">
+    <section class="panel" aria-labelledby="wl">
+      <h2 class="sub" id="wl">Wallets</h2>
+      <div class="wallets" id="wallets"></div>
+      <p class="msg" id="status" role="status"></p>
+      <div class="notice">No wallet detected even though it is installed? Extensions often cannot reach pages shown inside a preview frame. Open this site in its own browser tab and reload.</div>
+    </section>
+
+    <div style="display:grid;gap:20px;min-width:0">
+      <section class="panel" id="current" hidden>
+        <h2 class="sub">Connected</h2>
+        <div class="field"><span class="label">Wallet</span><span id="cw" class="mono"></span></div>
+        <div class="field"><span class="label">Address</span><span id="ca" class="addr"></span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <button type="button" class="btn sm" id="copy">Copy address</button>
+          <button type="button" class="btn sm" id="off">Disconnect</button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="wo">
+        <h2 class="sub" id="wo">Watch-only</h2>
+        <p class="muted" style="margin:0">No extension? Paste a Solana address to look around. Watch-only mode cannot sign anything.</p>
+        <div class="field"><label for="addr">Solana address</label><input id="addr" type="text" autocomplete="off" spellcheck="false" placeholder="Paste a public address"></div>
+        <button type="button" class="btn sm" id="watch">Use watch-only</button>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="nexora.js"></script>
+<script>
+  NX.init({ page: 'connect', anim: 'orbit' });
+  NX.renderWallets(document.getElementById('wallets'), document.getElementById('status'));
+  NX.watchOnly(document.getElementById('addr'), document.getElementById('status'), document.getElementById('watch'));
+  var cur = document.getElementById('current');
+  NX.onSession(function (s) {
+    cur.hidden = !s;
+    if (s) { document.getElementById('cw').textContent = s.wallet; document.getElementById('ca').textContent = s.address; }
+  });
+  document.getElementById('copy').addEventListener('click', function () { var s = NX.session(); if (s) NX.copy(s.address); });
+  document.getElementById('off').addEventListener('click', function () { NX.setSession(null); document.getElementById('status').textContent = 'Disconnected from Nexora. Revoke access inside the wallet for a full disconnect.'; });
+</script>
+</body>
+</html>

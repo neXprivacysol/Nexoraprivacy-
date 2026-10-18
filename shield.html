@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shield · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Shield</p>
+    <h1>Move funds into your private balance</h1>
+    <p class="lead">Shielding turns a public token balance into a private one. Anyone watching the chain sees a deposit, not what you hold afterwards.</p>
+  </header>
+
+  <div class="split">
+    <form class="panel" id="f" novalidate>
+      <div class="row">
+        <div class="field"><label for="asset">Token</label>
+          <select id="asset"><option>SOL</option><option>USDC</option><option>USDT</option></select></div>
+        <div class="field"><label for="amt">Amount</label>
+          <input id="amt" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"></div>
+      </div>
+      <div class="field"><span class="label">From</span><output class="box" id="from">Not connected</output></div>
+      <div class="notice">Preview mode. This form walks through the shield flow but does not sign or send anything.</div>
+      <button class="btn solid" type="submit">Shield funds</button>
+      <p class="msg" role="status"></p>
+      <ol class="log" aria-live="polite"></ol>
+    </form>
+
+    <aside class="panel">
+      <h2 class="sub">What happens</h2>
+      <ol class="steps">
+        <li>Your wallet approves a deposit of the token you picked.</li>
+        <li>Nexora builds a private note that only your keys can spend.</li>
+        <li>The note joins a shared pool with every other depositor.</li>
+        <li>Your private balance appears in the Vault.</li>
+      </ol>
+    </aside>
+  </div>
+</main>
+
+<script src="nexora.js"></script>
+<script>
+  NX.init({ page: 'shield', anim: 'vortex' });
+  var from = document.getElementById('from');
+  NX.onSession(function (s) { from.textContent = s ? s.address : 'Not connected'; });
+  NX.actionForm(document.getElementById('f'), {
+    validate: function () {
+      var v = parseFloat(document.getElementById('amt').value);
+      return (isFinite(v) && v > 0) ? '' : 'Enter an amount greater than zero.';
+    },
+    steps: ['Checking the deposit request', 'Building a private note', 'Generating the proof', 'Preparing the transaction for your wallet']
+  });
+</script>
+</body>
+</html>

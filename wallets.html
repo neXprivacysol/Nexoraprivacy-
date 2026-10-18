@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wallets · Nexora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap main">
+  <header class="page-head">
+    <p class="eyebrow">Wallets</p>
+    <h1>Use the wallet you already trust</h1>
+    <p class="lead">Nexora works with the major Solana wallets. Any wallet that follows Wallet Standard shows up on the Connect page on its own.</p>
+  </header>
+
+  <section class="panel" style="gap:0">
+    <div class="wallets">
+      <div class="wallet"><div class="mono-box">P</div><div class="meta"><strong>Phantom</strong><span>Browser extension and mobile. Connects through its Solana provider.</span></div><a class="btn sm" href="https://phantom.com/download" target="_blank" rel="noopener">phantom.com/download &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">M</div><div class="meta"><strong>MetaMask</strong><span>Connects through Wallet Standard once Solana is enabled in MetaMask.</span></div><a class="btn sm" href="https://metamask.io/download" target="_blank" rel="noopener">metamask.io/download &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">S</div><div class="meta"><strong>Solflare</strong><span>Browser extension and mobile app.</span></div><a class="btn sm" href="https://solflare.com/download" target="_blank" rel="noopener">solflare.com/download &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">B</div><div class="meta"><strong>Backpack</strong><span>Browser extension and mobile app.</span></div><a class="btn sm" href="https://backpack.app/downloads" target="_blank" rel="noopener">backpack.app/downloads &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">C</div><div class="meta"><strong>Coinbase Wallet</strong><span>Browser extension and mobile app.</span></div><a class="btn sm" href="https://www.coinbase.com/wallet/downloads" target="_blank" rel="noopener">coinbase.com/wallet/downloads &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">T</div><div class="meta"><strong>Trust Wallet</strong><span>Browser extension and mobile app.</span></div><a class="btn sm" href="https://trustwallet.com/download" target="_blank" rel="noopener">trustwallet.com/download &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">E</div><div class="meta"><strong>Exodus</strong><span>Desktop, mobile and browser extension.</span></div><a class="btn sm" href="https://www.exodus.com/download/" target="_blank" rel="noopener">exodus.com/download &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">L</div><div class="meta"><strong>Ledger</strong><span>Use it through Phantom or Solflare. Plug in, unlock the Solana app, then connect the host wallet.</span></div><a class="btn sm" href="https://www.ledger.com" target="_blank" rel="noopener">ledger.com &#8599;</a></div>
+      <div class="wallet"><div class="mono-box">W</div><div class="meta"><strong>WalletConnect</strong><span>QR pairing for mobile wallets. Needs a project ID, so it is switched on when Nexora is hosted on its own domain.</span></div><a class="btn sm" href="https://walletconnect.com" target="_blank" rel="noopener">walletconnect.com &#8599;</a></div>
+    </div>
+  </section>
+</main>
+
+<script src="nexora.js"></script>
+<script>NX.init({ page: 'wallets', anim: 'mesh' });</script>
+</body>
+</html>
