@@ -53,7 +53,12 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
-<script type="module">import { Buffer } from "https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm"; window.Buffer = Buffer;</script>
+<script>
+window.__bufReady = (function () {
+  function load(u) { return import(u).then(function (m) { window.Buffer = m.Buffer || (m.default && m.default.Buffer); if (!window.Buffer) throw new Error('no Buffer export'); }); }
+  return load('https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm').catch(function () { return load('https://esm.sh/buffer@6.0.3'); }).catch(function () { window.__bufFail = true; });
+})();
+</script>
 <script src="nexora.js"></script>
 <script>
   NX.init({ page: 'send', anim: 'streams' });
@@ -82,7 +87,11 @@
     if (!NX.session()) { msg.textContent = 'Connect a wallet first. Use the Connect wallet button at the top right.'; return; }
     if (!NX.B58.test(to)) { msg.textContent = 'Enter a valid Solana address for the recipient.'; return; }
     go.disabled = true;
-    NX.send({ to: to, asset: asset, amount: amt }, step).then(function (sig) {
+    step('send.html v2');
+    Promise.resolve(window.__bufReady).then(function () {
+      if (!window.Buffer) throw new Error('Buffer helper failed to load. Check your connection or try another browser.');
+      return NX.send({ to: to, asset: asset, amount: amt }, step);
+    }).then(function (sig) {
       var li = document.createElement('li'); li.className = 'done'; li.textContent = 'Confirmed'; log.appendChild(li);
       res.innerHTML = '';
       var a = document.createElement('a'); a.href = NX.explorerTx(sig); a.target = '_blank'; a.rel = 'noopener';
