@@ -947,11 +947,6 @@ window.NX_DEFAULT_NET='mainnet';try{localStorage.removeItem('nexora.net');}catch
     h.innerHTML = '<div class="wrap"><div class="bar"><a class="brand" href="index.html" aria-label="Nexora home"><canvas id="logo-mark"></canvas><span>Nexora</span></a>' +
       '<a class="btn sm solid" id="conn" href="connect.html"></a></div><nav class="tabs" aria-label="Pages">' + tabs + '</nav></div>';
     document.body.insertBefore(h, document.body.firstChild);
-    if (getNet() === 'devnet') {
-      var bn = document.createElement('div'); bn.className = 'devnet-banner'; bn.setAttribute('role', 'status');
-      bn.textContent = 'DEVNET: test coins only. Nothing here uses real funds.';
-      document.body.insertBefore(bn, document.body.firstChild);
-    }
     var conn = h.querySelector('#conn');
     onSession(function (s) {
       conn.innerHTML = '';
