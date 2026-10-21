@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nexora · send</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --fg: #f3f3f3;
+    --muted: #8c8c8c;
+    --line: #3a3a3a;
+    --err: #ff6b6b;
+    --ok: #7ee787;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font-family: var(--mono);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: inherit; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 20px; }
+  .logo {
+    width: 44px; height: 44px; border-radius: 6px;
+    background:
+      radial-gradient(circle at 30% 30%, #fff 0 2px, transparent 3px),
+      radial-gradient(circle at 70% 40%, #ddd 0 2px, transparent 3px),
+      radial-gradient(circle at 45% 70%, #fff 0 2px, transparent 3px),
+      radial-gradient(circle at 60% 20%, #bbb 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 20% 60%, #bbb 0 1.5px, transparent 2.5px),
+      #151515;
+  }
+  #walletBtn {
+    font: inherit; font-size: 15px; color: #000; background: var(--fg);
+    border: 0; padding: 14px 20px; cursor: pointer; white-space: nowrap;
+  }
+  #walletBtn .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #000; margin-right: 10px; }
+
+  nav {
+    display: flex; overflow-x: auto; border-bottom: 1px solid var(--line);
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    flex: none; padding: 16px 20px; text-decoration: none; color: var(--muted);
+    border-bottom: 2px solid transparent; font-size: 16px;
+  }
+  nav a[aria-current="page"] { color: var(--fg); border-bottom-color: var(--fg); }
+
+  main { max-width: 560px; margin: 0 auto; padding: 24px 20px 64px; }
+  .frame { border-left: 1px solid var(--line); border-right: 1px solid var(--line); padding: 8px 20px 24px; }
+
+  label { display: block; margin: 28px 0 8px; color: var(--muted); font-size: 15px; }
+  input, select {
+    width: 100%; font: inherit; font-size: 20px; color: var(--fg); background: #000;
+    border: 1px solid var(--line); border-radius: 0; padding: 18px 18px; outline: none;
+  }
+  select {
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' fill='none' stroke='%23f3f3f3' stroke-width='1.5'%3E%3Cpath d='M1 1l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 18px center;
+    padding-right: 44px;
+  }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--fg); outline-offset: 2px;
+  }
+  input::placeholder { color: #555; }
+
+  .notice {
+    margin-top: 28px; padding: 20px 22px; border: 1px dashed var(--muted);
+    color: #c9c9c9; font-size: 17px; line-height: 1.75;
+  }
+
+  #sendBtn {
+    display: block; width: 100%; margin-top: 28px; padding: 22px;
+    font: inherit; font-size: 17px; font-weight: 500; color: #000; background: var(--fg);
+    border: 0; cursor: pointer;
+  }
+  #sendBtn:disabled { opacity: .5; cursor: progress; }
+
+  #status { margin: 28px 0 0; font-weight: 700; font-size: 17px; word-break: break-word; }
+  #status.err { color: var(--err); }
+  #status.ok { color: var(--ok); }
+  #status a { text-decoration: underline; }
+
+  #log { list-style: none; margin: 20px 0 0; padding: 0; }
+  #log li { display: flex; gap: 14px; align-items: baseline; margin: 12px 0; font-size: 17px; color: #d8d8d8; }
+  #log li::before { content: ""; flex: none; width: 10px; height: 10px; background: var(--fg); transform: translateY(1px); }
+  #log li.done::before { background: var(--ok); }
+  #log li.fail::before { background: var(--err); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #sendBtn { transition: opacity .15s; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span class="logo" aria-hidden="true"></span><span>nexora</span></div>
+  <button id="walletBtn" type="button"><span class="dot"></span><span id="walletLabel">connect</span></button>
+</header>
+
+<nav aria-label="Sections">
+  <a href="shield.html">shield</a>
+  <a href="send.html" aria-current="page">send</a>
+  <a href="swap.html">swap</a>
+  <a href="vault.html">vault</a>
+  <a href="wallets.html">wallets</a>
+  <a href="features.html">features</a>
+</nav>
+
+<main>
+  <div class="frame">
+    <label for="network">--network</label>
+    <select id="network">
+      <option value="devnet" selected>Devnet (test)</option>
+      <option value="mainnet-beta">Mainnet (real funds)</option>
+    </select>
+
+    <label for="recipient">--recipient address</label>
+    <input id="recipient" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Solana address">
+
+    <label for="token">--token</label>
+    <select id="token">
+      <option value="SOL" selected>SOL</option>
+    </select>
+
+    <label for="amount">--amount</label>
+    <input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.001" value="0.001">
+
+    <div class="notice">This is a public transfer. Sender, recipient and amount are visible on the blockchain. Private routing is not enabled yet.</div>
+
+    <button id="sendBtn" type="button">send</button>
+
+    <p id="status" role="status" aria-live="polite"></p>
+    <ul id="log" aria-live="polite"></ul>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var VERSION = "send.html v3";
+  var web3 = window.solanaWeb3;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var statusEl = $("status"), logEl = $("log"), sendBtn = $("sendBtn");
+  var walletBtn = $("walletBtn"), walletLabel = $("walletLabel");
+
+  var publicKey = null; // connected wallet PublicKey
+
+  if (!web3) {
+    setStatus("Could not load the Solana library. Check your connection and reload.", "err");
+    sendBtn.disabled = true;
+    return;
+  }
+
+  /* ---------- helpers ---------- */
+
+  function setStatus(msg, kind) {
+    statusEl.className = kind || "";
+    statusEl.textContent = msg || "";
+  }
+  function logClear() { logEl.innerHTML = ""; }
+  function logAdd(text, state) {
+    var li = document.createElement("li");
+    li.textContent = text;
+    if (state) li.className = state;
+    logEl.appendChild(li);
+    return li;
+  }
+  function short(s) { return s.slice(0, 4) + "…" + s.slice(-4); }
+
+  function getProvider() {
+    if (window.phantom && window.phantom.solana && window.phantom.solana.isPhantom) return window.phantom.solana;
+    if (window.solana && window.solana.isPhantom) return window.solana;
+    return null;
+  }
+
+  function setConnected(pk) {
+    publicKey = pk;
+    walletLabel.textContent = pk ? short(pk.toBase58()) : "connect";
+  }
+
+  // "0.001" -> 1000000n lamports, without floating point rounding errors
+  function toLamports(str) {
+    var s = String(str).trim();
+    if (!/^(\d+\.?\d*|\.\d+)$/.test(s)) return null;
+    var parts = s.split(".");
+    var whole = parts[0] || "0";
+    var frac = parts[1] || "";
+    if (frac.length > 9) return null;
+    return BigInt(whole) * 1000000000n + BigInt((frac + "000000000").slice(0, 9));
+  }
+
+  function explorerUrl(sig, cluster) {
+    return "https://explorer.solana.com/tx/" + sig + (cluster === "mainnet-beta" ? "" : "?cluster=" + cluster);
+  }
+
+  /* ---------- wallet ---------- */
+
+  async function connectWallet(silent) {
+    var provider = getProvider();
+    if (!provider) {
+      if (!silent) {
+        var deep = "https://phantom.app/ul/browse/" + encodeURIComponent(location.href) +
+                   "?ref=" + encodeURIComponent(location.origin);
+        statusEl.className = "err";
+        statusEl.innerHTML = "Phantom not found. Open this page inside the Phantom app browser: " +
+          '<a href="' + deep + '">open in Phantom</a>';
+      }
+      return null;
+    }
+    try {
+      var res = silent
+        ? await provider.connect({ onlyIfTrusted: true })
+        : await provider.connect();
+      var pk = new web3.PublicKey((res && res.publicKey ? res.publicKey : provider.publicKey).toString());
+      setConnected(pk);
+      return pk;
+    } catch (e) {
+      if (!silent) setStatus("Wallet connection was cancelled.", "err");
+      return null;
+    }
+  }
+
+  walletBtn.addEventListener("click", function () { connectWallet(false); });
+  connectWallet(true); // auto-reconnect if the site is already trusted
+
+  /* ---------- send ---------- */
+
+  async function send() {
+    logClear();
+    setStatus("");
+    sendBtn.disabled = true;
+
+    var step = null;
+    function begin(text) { step = logAdd(text); }
+    function finish() { if (step) step.className = "done"; }
+    function fail(err) {
+      if (step) step.className = "fail";
+      setStatus(err, "err");
+    }
+
+    try {
+      var cluster = $("network").value;
+      var recipientStr = $("recipient").value.trim();
+      var lamports = toLamports($("amount").value);
+
+      // 1. validate input
+      var recipient;
+      try { recipient = new web3.PublicKey(recipientStr); }
+      catch (_) { return setStatus("Enter a valid recipient address.", "err"); }
+      if (lamports === null || lamports <= 0n) {
+        return setStatus("Enter an amount greater than 0 (up to 9 decimals).", "err");
+      }
+
+      // 2. wallet
+      begin("Reconnecting to Phantom");
+      var provider = getProvider();
+      var pk = publicKey || await connectWallet(false);
+      if (!provider || !pk) { step.className = "fail"; return; }
+      finish();
+
+      // 3. build the transaction. THIS is the fix: fetch a recent blockhash
+      //    and set it (plus the fee payer) before the wallet signs.
+      begin("Preparing the transfer");
+      var connection = new web3.Connection(web3.clusterApiUrl(cluster), "confirmed");
+
+      var balance = await connection.getBalance(pk);
+      if (BigInt(balance) < lamports + 5000n) {
+        throw new Error(
+          "Not enough SOL on " + cluster + ". Balance: " + (balance / web3.LAMPORTS_PER_SOL) +
+          " SOL." + (cluster === "devnet" ? " Get test SOL at faucet.solana.com." : "")
+        );
+      }
+
+      var latest = await connection.getLatestBlockhash("confirmed");
+      var tx = new web3.Transaction({
+        feePayer: pk,
+        blockhash: latest.blockhash,
+        lastValidBlockHeight: latest.lastValidBlockHeight
+      }).add(
+        web3.SystemProgram.transfer({ fromPubkey: pk, toPubkey: recipient, lamports: lamports })
+      );
+      // Same fields set explicitly, so nothing is ever left undefined:
+      tx.recentBlockhash = latest.blockhash;
+      tx.feePayer = pk;
+      finish();
+
+      // 4. sign in the wallet, send through OUR connection so the selected
+      //    network is always the one used (Phantom's own network setting is ignored)
+      begin("Approve the transaction in your wallet");
+      var signed = await provider.signTransaction(tx);
+      finish();
+
+      begin("Sending to " + cluster);
+      var signature = await connection.sendRawTransaction(signed.serialize(), {
+        skipPreflight: false,
+        preflightCommitment: "confirmed"
+      });
+      finish();
+
+      // 5. confirm
+      begin("Confirming");
+      var result = await connection.confirmTransaction(
+        { signature: signature, blockhash: latest.blockhash, lastValidBlockHeight: latest.lastValidBlockHeight },
+        "confirmed"
+      );
+      if (result.value && result.value.err) {
+        throw new Error("Transaction failed on-chain: " + JSON.stringify(result.value.err));
+      }
+      finish();
+
+      statusEl.className = "ok";
+      statusEl.innerHTML = "Sent. " + '<a href="' + explorerUrl(signature, cluster) +
+        '" target="_blank" rel="noopener">view on explorer</a>';
+    } catch (e) {
+      var msg = (e && e.message) ? e.message : String(e);
+      if (/reject|denied|cancel/i.test(msg)) msg = "You rejected the request in Phantom.";
+      fail(msg);
+      console.error(VERSION, e);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", send);
+  console.log(VERSION);
+})();
+</script>
+</body>
+</html>
