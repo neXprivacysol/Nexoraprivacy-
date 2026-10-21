@@ -1,4 +1,4 @@
-window.NX_DEFAULT_NET='devnet';
+window.NX_DEFAULT_NET='mainnet';try{localStorage.removeItem('nexora.net');}catch(e){}
 /* Nexora shared script: navigation, wallet connection, form helpers and eleven canvas animations. */
 (function () {
   'use strict';
