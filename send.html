@@ -53,6 +53,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
+<script type="module">import { Buffer } from "https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm"; window.Buffer = Buffer;</script>
 <script src="nexora.js"></script>
 <script>
   NX.init({ page: 'send', anim: 'streams' });
@@ -87,6 +88,7 @@
       var a = document.createElement('a'); a.href = NX.explorerTx(sig); a.target = '_blank'; a.rel = 'noopener';
       a.textContent = 'View transaction ' + sig.slice(0, 8) + '\u2026 \u2197'; res.appendChild(a);
     }).catch(function (err) {
+      console.error('[nexora] send failed', err);
       var m = (err && err.message) || String(err);
       msg.textContent = /reject|denied|cancel/i.test(m) ? 'You cancelled the request in your wallet.' : m;
     }).then(function () { go.disabled = false; });
