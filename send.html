@@ -151,11 +151,15 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
-<script>
+<script type="module">
+// web3.js needs a global Buffer in the browser; load a small polyfill first.
+import { Buffer } from "https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm";
+window.Buffer = window.Buffer || Buffer;
+
 (function () {
   "use strict";
 
-  var VERSION = "send.html v3";
+  var VERSION = "send.html v3.1";
   var web3 = window.solanaWeb3;
 
   var $ = function (id) { return document.getElementById(id); };
