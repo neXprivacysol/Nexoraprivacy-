@@ -976,6 +976,23 @@ window.NX_DEFAULT_NET='devnet';
     document.body.appendChild(f);
   }
 
+  /* silent reconnect: new tabs/pages re-link to an already approved wallet without a popup */
+  function autoConnect() {
+    if (session()) return;
+    var tries = 0;
+    (function go() {
+      var list = entries().filter(function (x) { return x.legacy; });
+      if (!list.length) { if (++tries < 8) setTimeout(go, 400); return; }
+      var e = list[0];
+      Promise.resolve().then(function () { return e.legacy.connect({ onlyIfTrusted: true }); }).then(function (res) {
+        var pk = (res && res.publicKey) || e.legacy.publicKey;
+        if (!pk) return;
+        live = { entry: e, provider: e.legacy, address: pk.toString() };
+        setSession({ mode: 'wallet', wallet: e.name, address: pk.toString() });
+      }).catch(function () {});
+    })();
+  }
+
   function init(o) {
     buildNav(o.page);
     if (o.anim) {
@@ -984,6 +1001,7 @@ window.NX_DEFAULT_NET='devnet';
       run(c, o.anim);
     }
     buildFoot();
+    autoConnect();
   }
 
   window.NX = {
