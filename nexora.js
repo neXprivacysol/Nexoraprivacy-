@@ -635,12 +635,14 @@ window.NX_DEFAULT_NET='devnet';
   var KEY = 'nexora.session', mem = null, listeners = [];
   function session() {
     try { var s = sessionStorage.getItem(KEY); if (s) return JSON.parse(s); } catch (e) {}
+    try { var s2 = localStorage.getItem(KEY); if (s2) return JSON.parse(s2); } catch (e) {}
     return mem;
   }
   function setSession(s) {
     mem = s;
     if (!s || s.mode !== 'wallet') live = null;
     try { if (s) sessionStorage.setItem(KEY, JSON.stringify(s)); else sessionStorage.removeItem(KEY); } catch (e) {}
+    try { if (s) localStorage.setItem(KEY, JSON.stringify(s)); else localStorage.removeItem(KEY); } catch (e) {}
     listeners.forEach(function (f) { try { f(s); } catch (e) {} });
   }
   function onSession(f) { listeners.push(f); f(session()); }
@@ -708,7 +710,7 @@ window.NX_DEFAULT_NET='devnet';
   var live = null;
   function connectEntry(e) {
     if (e.legacy) {
-      return Promise.resolve(e.legacy.connect()).then(function (res) {
+      return Promise.resolve().then(function () { return e.legacy.connect({ onlyIfTrusted: true }); }).catch(function () { return e.legacy.connect(); }).then(function (res) {
         var pk = (res && res.publicKey) || e.legacy.publicKey;
         if (!pk) throw new Error('The wallet did not return an account.');
         live = { entry: e, provider: e.legacy, address: pk.toString() };
