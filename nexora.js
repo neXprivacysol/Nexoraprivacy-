@@ -1,3 +1,4 @@
+window.NX_DEFAULT_NET='devnet';
 /* Nexora shared script: navigation, wallet connection, form helpers and eleven canvas animations. */
 (function () {
   'use strict';
@@ -775,17 +776,24 @@
 
 
   /* ------------------------------------------------------------------ */
-  /* Real transfers (Solana mainnet). Needs @solana/web3.js (global solanaWeb3) */
+  /* Real transfers (Solana mainnet or devnet, user selectable). Needs @solana/web3.js (global solanaWeb3) */
   /* ------------------------------------------------------------------ */
-  var TOKENS = {
-    USDC: { mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', dec: 6 },
-    USDT: { mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNyUiXfXjKi4ygzzJT', dec: 6 }
+  var NETS = {
+    mainnet: { label: 'Mainnet', chain: 'solana:mainnet', rpc: 'https://api.mainnet-beta.solana.com', cluster: '',
+      tokens: { USDC: { mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', dec: 6 }, USDT: { mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNyUiXfXjKi4ygzzJT', dec: 6 } } },
+    devnet: { label: 'Devnet', chain: 'solana:devnet', rpc: 'https://api.devnet.solana.com', cluster: '?cluster=devnet',
+      tokens: { USDC: { mint: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU', dec: 6 } } }
   };
   var TOKEN_PROG = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
   var ATA_PROG = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
-  var RPC_KEY = 'nexora.rpc', DEFAULT_RPC = 'https://api.mainnet-beta.solana.com';
-  function getRpc() { try { return localStorage.getItem(RPC_KEY) || DEFAULT_RPC; } catch (e) { return DEFAULT_RPC; } }
-  function setRpc(u) { try { if (u) localStorage.setItem(RPC_KEY, u); else localStorage.removeItem(RPC_KEY); } catch (e) {} }
+  var NET_KEY = 'nexora.net', RPC_KEY = 'nexora.rpc';
+  function getNet() { try { var n = localStorage.getItem(NET_KEY); if (NETS[n]) return n; } catch (e) {} return (window.NX_DEFAULT_NET && NETS[window.NX_DEFAULT_NET]) ? window.NX_DEFAULT_NET : 'mainnet'; }
+  function setNet(n) { if (!NETS[n]) return; try { localStorage.setItem(NET_KEY, n); localStorage.removeItem(RPC_KEY + '.' + n); } catch (e) {} }
+  function netInfo() { return NETS[getNet()]; }
+  function defaultRpc() { return netInfo().rpc; }
+  function getRpc() { try { return localStorage.getItem(RPC_KEY + '.' + getNet()) || defaultRpc(); } catch (e) { return defaultRpc(); } }
+  function setRpc(u) { try { if (u) localStorage.setItem(RPC_KEY + '.' + getNet(), u); else localStorage.removeItem(RPC_KEY + '.' + getNet()); } catch (e) {} }
+  function explorerTx(sig) { return 'https://solscan.io/tx/' + sig + netInfo().cluster; }
 
   /* decimal string -> BigInt base units, no float rounding */
   function toUnits(str, dec) {
@@ -807,8 +815,8 @@
       ixs.push(W.SystemProgram.transfer({ fromPubkey: fromPk, toPubkey: toPk, lamports: units }));
       return Promise.resolve({ ixs: ixs, units: units, dec: 9 });
     }
-    var t = TOKENS[asset];
-    if (!t) return Promise.reject(new Error('Unsupported token.'));
+    var t = netInfo().tokens[asset];
+    if (!t) return Promise.reject(new Error(asset + ' is not available on ' + netInfo().label + '.'));
     units = toUnits(amount, t.dec);
     var mint = new W.PublicKey(t.mint), tp = new W.PublicKey(TOKEN_PROG), ap = new W.PublicKey(ATA_PROG);
     function ata(owner) { return W.PublicKey.findProgramAddressSync([owner.toBytes(), tp.toBytes(), mint.toBytes()], ap)[0]; }
@@ -886,7 +894,7 @@
       var f = live.wallet.features['solana:signAndSendTransaction'];
       if (!f) throw new Error('This wallet cannot sign and send transactions here.');
       return Promise.resolve(f.signAndSendTransaction({
-        account: live.account, chain: 'solana:mainnet', transaction: tx.serialize({ requireAllSignatures: false, verifySignatures: false })
+        account: live.account, chain: netInfo().chain, transaction: tx.serialize({ requireAllSignatures: false, verifySignatures: false })
       })).then(function (res) { return b58(res[0].signature); });
     }).then(function (sig) {
       say('Sent. Waiting for confirmation');
@@ -937,6 +945,11 @@
     h.innerHTML = '<div class="wrap"><div class="bar"><a class="brand" href="index.html" aria-label="Nexora home"><canvas id="logo-mark"></canvas><span>Nexora</span></a>' +
       '<a class="btn sm solid" id="conn" href="connect.html"></a></div><nav class="tabs" aria-label="Pages">' + tabs + '</nav></div>';
     document.body.insertBefore(h, document.body.firstChild);
+    if (getNet() === 'devnet') {
+      var bn = document.createElement('div'); bn.className = 'devnet-banner'; bn.setAttribute('role', 'status');
+      bn.textContent = 'DEVNET: test coins only. Nothing here uses real funds.';
+      document.body.insertBefore(bn, document.body.firstChild);
+    }
     var conn = h.querySelector('#conn');
     onSession(function (s) {
       conn.innerHTML = '';
@@ -973,6 +986,6 @@
 
   window.NX = {
     init: init, run: run, session: session, setSession: setSession, onSession: onSession, short: short,
-    renderWallets: renderWallets, watchOnly: watchOnly, copy: copy, toast: toast, actionForm: actionForm, B58: B58, send: send, getRpc: getRpc, setRpc: setRpc
+    renderWallets: renderWallets, watchOnly: watchOnly, copy: copy, toast: toast, actionForm: actionForm, B58: B58, send: send, getRpc: getRpc, setRpc: setRpc, getNet: getNet, setNet: setNet, netInfo: netInfo, defaultRpc: defaultRpc, explorerTx: explorerTx, NETS: NETS
   };
 })();

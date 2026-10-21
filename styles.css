@@ -253,3 +253,5 @@ footer.foot { padding-block: 36px 40px; font-size: 12px; }
 .fbase { margin: 28px 0 0 !important; padding-top: 16px; border-top: 1px solid var(--line); color: var(--dim); }
 @media (max-width: 820px) { .fgrid { grid-template-columns: 1fr 1fr; } .fabout { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { .mega::after, .brand span::after { animation: none; } }
+
+.devnet-banner{background:#fff;color:#000;text-align:center;font:600 12px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.06em;padding:8px 12px;position:relative;z-index:50}
